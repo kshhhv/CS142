@@ -60,7 +60,7 @@ public:
         int i=1;
         int c= Count();
 
-        if(pos <= c){
+        if(pos <= c and pos != 1){
             while (i<pos-1){
                 i++;
                 current = current->next;
@@ -74,6 +74,22 @@ public:
             temp->next = current->next;
             current->next = temp;
         }
+        else if (pos == 1){
+            Node * temp = new Node;
+            //Insert value in node
+            temp->data = value;
+            temp->next = head;
+            head = temp;
+
+		}
+
+		else if (pos==c+1){
+			insert(value);
+		}
+
+
+       
+
         else{
             cout<<"Linked List does not have that many elements." <<endl;
         }
@@ -84,36 +100,62 @@ public:
 
 
 
+
+
     //deletion
     void delet(){
-        //store the tail in temp
-        Node * temp = tail;
-        // before tail has to point to NULL
-        Node * current = head;
-        while(current->next != tail){
-                current = current->next;
-        }
-        current->next = NULL;
+        if(Count()>1){
+		    // before tail has to point to NULL
+		    Node * current = head;
+		    while(current->next->next!=NULL){
+		            current = current->next;
+		    }
+			Node * temp =current->next;
+		    current->next = NULL;
 
-        //update tail
-        tail = current;
-        //delete temp
-        delete temp;
-    }
+		    //update tail
+		    tail = current;
+		    //delete temp
+		    delete temp;
+    	}
+
+		else if (Count()==1){
+			Node * temp = head;
+			head = NULL;
+			tail = NULL;
+			delete temp;
+		}
+	}
 
     //deletion at position
     void deletAt(int pos)
   {
-    Node * current=new Node;
-    Node * previous=new Node;
-    current=head;
-
-    for(int i=1;i<pos;i++)
-    {
-      previous=current;
-      current=current->next;
+    Node * current= head;
+    Node * previous;
+    
+    
+    if (pos==1){
+        head=current->next;
+        delete current;
     }
-    previous->next=current->next;
+
+    else if(pos>1 and pos<Count()){
+
+        for(int i=1;i<pos-1;i++)
+        {
+          current=current->next;
+        }
+		previous=current;
+		current = current->next;      
+		previous->next=current->next;
+        delete current;
+
+      }
+
+	else if(pos==Count()){
+		delet();
+	}
+
   }
 
     int Count()
@@ -139,6 +181,44 @@ public:
         cout<<endl;
     }
 
+    void revDisplay(){
+        revDisplay2(head);
+        cout<<endl;
+    }
+
+    void revDisplay2(Node * current){
+        //move to next (till available)
+        if(current==NULL) return;
+        else{
+            //recursion
+            revDisplay2(current->next);
+            // print while returning
+            cout<<current->data<<"->";
+        }
+    }
+
+    void revLL(){
+        Node * temp= head;
+        revLL2(head);
+        tail=temp;
+        temp->next=NULL;
+    }
+
+    void revLL2(Node * current){
+        //empty list
+        if(current==NULL) return;
+        //1 node
+        else if (current->next==NULL){
+            head==current;
+            return;
+        }
+        //for rest of elements
+        else{
+            revLL2(current->next);
+            current->next->next=current;
+        }
+
+    }
 };
 
 
@@ -146,22 +226,16 @@ int main()
 {
 
     linkedList l1;
-    l1.insert(1);
-    l1.insert(2);
-    l1.insert(3);
-    l1.insert(4);
+
+    l1.insert(4);	
     l1.insert(5);
-    l1.insert(6);
-
+	l1.insert(6);
+	l1.insert(7);
+    l1.insertAt(1,3);
     l1.display();
-    cout<<"No. of elements is: ";
-    cout<<l1.Count()<<endl;
+
     l1.delet();
-    l1.deletAt(2);
 
-    l1.display();
-
-    l1.insertAt(10,4);
 
     l1.display();
     cout<<"No. of elements is: ";
@@ -169,4 +243,6 @@ int main()
 
 
     return 0;
+
 }
+
